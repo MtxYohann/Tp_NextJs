@@ -6,7 +6,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function fetchCourse() {
   try {
-    const data = await sql<Course[]>`SELECT * FROM course`;
+    const data = await sql<Course[]>`SELECT * FROM courses`;
 
     return data;
   } catch (error) {
