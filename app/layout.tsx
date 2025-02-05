@@ -1,6 +1,7 @@
 import '@/app/ui/global.css'
 import Image from 'next/image'
 import Link from 'next/link';
+import { inter } from '@/app/ui/fonts'
 
 export default function RootLayout({
   children,
@@ -9,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${inter.className} antialiased`}>
         <div className="flex h-20 items-center shrink-0 rounded-lg bg-cyan-100 m-4 p-4 md:h-52">
           <Image
             src="/logo.png"
@@ -27,6 +28,6 @@ export default function RootLayout({
           </Link>
         </div>
         {children}</body>
-    </html>
+    </html >
   );
 }
