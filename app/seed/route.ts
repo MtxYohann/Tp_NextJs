@@ -20,7 +20,7 @@ async function seedUsers() {
     users.map(async (user) => {
       const hashedPassword = await bcrypt.hash(user.password, 10);
       return sql`
-        INSERT INTO users (id, name, email, password)
+        INSERT INTO users (id, name, email, password, role)
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword}, ${user.role})
         ON CONFLICT (id) DO NOTHING;
       `;
@@ -39,7 +39,7 @@ async function seedCourses() {
       title VARCHAR(255) NOT NULL,
       description TEXT NOT NULL,
       instrument VARCHAR(255) NOT NULL,
-      teacherId UUID NOT NULL,
+      teacherId VARCHAR(255) NOT NULL,
       level VARCHAR(255) NOT NULL,
       schedule VARCHAR(255) NOT NULL,
       capacity INT NOT NULL
@@ -49,7 +49,7 @@ async function seedCourses() {
   const insertedCourses = await Promise.all(
     courses.map(
       (course) => sql`
-        INSERT INTO courses (title, description, instrument, teacherId, level, schedule, capacity)
+        INSERT INTO courses (id, title, description, instrument, teacherId, level, schedule, capacity)
         VALUES (${course.id}, ${course.title}, ${course.description}, ${course.instrument}, ${course.teacherId}, ${course.level}, ${course.schedule}, ${course.capacity})
         ON CONFLICT (id) DO NOTHING;
       `,

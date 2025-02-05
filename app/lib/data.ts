@@ -14,3 +14,16 @@ export async function fetchCourse() {
     throw new Error('Failed to fetch revenue data.');
   }
 }
+
+export async function fetchTeacher() {
+  try {
+    const data = await sql<User[]>`
+    SELECT users.name, users.email
+    FROM users
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
