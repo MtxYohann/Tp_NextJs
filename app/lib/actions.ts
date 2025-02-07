@@ -1,11 +1,13 @@
 'use server'
 
+import bcrypt from 'bcrypt';
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { supabase } from "@/app/lib/supabaseClient"
 
 export async function authenticate(
     prevState: string | undefined,
@@ -28,58 +30,147 @@ export async function authenticate(
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-const FormSchema = z.object({
+const FormSchemaCourse = z.object({
     id: z.string(),
-    customerId: z.string({ invalid_type_error: 'Please select a customer' }),
-    amount: z.coerce
-        .number()
-        .gt(0, { message: 'Amount must be greater than 0' }),
-    status: z.enum(['pending', 'paid'], { invalid_type_error: 'Please select a status' }),
-    date: z.string(),
+    title: z.string({ invalid_type_error: 'Merci de choisir un titre' }),
+    description: z.string({ invalid_type_error: 'Merci de choisir une decription' }),
+    instrument: z.string({ invalid_type_error: 'Merci de choisir un instrument' }),
+    teacherId: z.string({ invalid_type_error: 'Merci de choisir un enseignant' }),
+    level: z.string({ invalid_type_error: 'Merci de choisir un niveau' }),
+    schedule: z.string({ invalid_type_error: 'Merci de choisir un horaire' }),
+    capacity: z.number({ invalid_type_error: 'Merci de choisir une capacité' }),
+
 })
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateCourse = FormSchemaCourse.omit({ id: true });
 
-export type State = {
+export type StateCourse = {
     errors?: {
-        customerId?: string;
-        amount?: string;
-        status?: string;
+        id?: string;
+        title?: string;
+        description?: string;
+        instrument?: string;
+        teacherId?: string;
+        level?: string;
+        schedule?: string;
+        capacity?: number;
     };
     message?: string | null;
 }
 
-// export async function createInvoice(prevState: State, formData: FormData) {
+export async function createCourse(prevState: StateCourse, formData: FormData) {
 
-//     const validatedFields = CreateInvoice.safeParse({
-//         customerId: formData.get('customerId'),
-//         amount: formData.get('amount'),
-//         status: formData.get('status'),
-//     });
-//     if (!validatedFields.success) {
-//         return {
-//             errors: validatedFields.error.flatten().fieldErrors,
-//             message: 'Missing Fields. Fields to Create Invoice.',
-//         };
+    const validatedFields = CreateCourse.safeParse({
+        title: formData.get('title'),
+        description: formData.get('description'),
+        instrument: formData.get('instrument'),
+        teacherId: formData.get('teacherId'),
+        level: formData.get('level'),
+        schedule: formData.get('schedule'),
+        capacity: formData.get('capacity'),
+    });
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Fields to Create Course.',
+        };
 
-//     }
-//     const { customerId, amount, status } = validatedFields.data;
-//     const amountInCents = amount * 100;
-//     const date = new Date().toISOString().split('T')[0];
+    }
+    const { title, description, instrument, teacherId, level, schedule, capacity } = validatedFields.data;
 
-//     try {
-//         await sql`
-//             INSERT INTO invoices (customer_id, amount, status, date)
-//             VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-//         `;
-//     } catch (error) {
-//         return {
-//             message: 'Database Error: Failed to Create Invoice',
-//         }
-//     }
-//     revalidatePath('/dashboard/invoices');
-//     redirect('/dashboard/invoices');
-// }
+    try {
+        await sql`
+            INSERT INTO courses (title, description, instrument, teacherId, level, schedule, capacity)
+            VALUES (${title}, ${description}, ${instrument},${teacherId},${level},${schedule},${capacity})
+        `;
+    } catch (error) {
+        return {
+            message: 'Database Error: Failed to Create Courses',
+        }
+    }
+    revalidatePath('/dashboard/cours');
+    redirect('/dashboard/cours');
+}
+
+
+export async function getRole() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+        return null;
+    }
+
+    const { data, error: dbError } = await supabase
+        .from('users')
+        .select('role')
+        .eq('email', user.email)
+        .single();
+
+    if (dbError || !data) {
+        return null;
+    }
+
+    return data.role;
+}
+
+const FormSchemaUser = z.object({
+    id: z.string(),
+    name: z.string({ invalid_type_error: 'Merci de choisir un prénom' }),
+    email: z.string({ invalid_type_error: 'Merci de choisir un email' }),
+    password: z.string({ invalid_type_error: 'Merci de choisir un mot de passe' }),
+    role: z.string({ invalid_type_error: 'Merci de choisir un role' }),
+
+})
+
+const CreateUser = FormSchemaUser.omit({ id: true });
+
+
+export type StateUser = {
+    errors?: {
+        id?: string;
+        title?: string;
+        description?: string;
+        instrument?: string;
+        teacherId?: string;
+        level?: string;
+        schedule?: string;
+        capacity?: number;
+    };
+    message?: string | null;
+}
+
+export async function createUser(prevState: StateUser, formData: FormData) {
+
+    const validatedFields = CreateUser.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role')
+    });
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Fields to Create Invoice.',
+        };
+
+    }
+    const { name, email, password, role } = validatedFields.data;
+    const hashedPassword = await bcrypt.hash(`${password}`, 10);
+    console.log(hashedPassword);
+
+    try {
+        await sql`
+            INSERT INTO users (name, email, password, role)
+            VALUES (${name}, ${email}, ${hashedPassword},${role})
+        `;
+    } catch (error) {
+        return {
+            message: 'Database Error: Failed to Create Users',
+        }
+    }
+    revalidatePath('/dashboard');
+    redirect('/dashboard');
+}
 
 
 // const UpdateInvoice = FormSchema.omit({ id: true, date: true });

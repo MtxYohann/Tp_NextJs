@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
+import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
@@ -31,32 +31,14 @@ export const { auth, signIn, signOut } = NextAuth({
                     const { email, password } = parsedCredentials.data;
                     const user = await getUser(email);
                     if (!user) return null;
+                    const passwordsMatch = await bcrypt.compare(password, user.password);
 
-                    const passwordMatch = await bcrypt.compare(password, user.password);
-                    if (passwordMatch) {
-                        return {
-                            id: user.id,
-                            email: user.email,
-                            name: user.name,
-                            role: user.role,
-                        };
-                    }
+                    if (passwordsMatch) return user;
                 }
+
+                console.log('Invalid credentials');
                 return null;
             },
         }),
     ],
-    callbacks: {
-
-        async session({ session, token, user }) {
-            console.log('session state: ', session);
-            console.log('user state: ', user);
-
-            if (session.user) {
-                session.user.role = user.role;
-            }
-            return session;
-        },
-    },
-    secret: process.env.NEXTAUTH_SECRET,
 });

@@ -1,13 +1,15 @@
-import { auth } from "@/auth";
+import { getRole } from "@/app/lib/actions";
 
 export default async function Page() {
-    const session = await auth();
-    console.log(session);
+    const role = await getRole();
+    console.log("test :", role);
 
-
-    if (session?.user?.role === "ADMIN") {
-
-        return <p>You are an admin, welcome!</p>;
+    if (role === "ADMIN") {
+        return (
+            <div>
+                <p>You are an admin, welcome!</p>
+            </div>
+        );
     }
 
     return <p>You are not authorized to view this page!</p>;

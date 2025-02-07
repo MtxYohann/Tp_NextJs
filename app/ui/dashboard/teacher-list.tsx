@@ -3,6 +3,7 @@ import clsx from 'clsx'
 
 export default async function TeacherList() {
     const teacherList = await fetchTeacher();
+
     return (
         <div className="flex flex-col ">
             <h2>Professeur</h2>

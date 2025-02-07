@@ -11,7 +11,7 @@ export async function fetchCourse() {
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to fetch courses data.');
   }
 }
 
@@ -24,6 +24,6 @@ export async function fetchTeacher() {
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to fetch teacher data.');
   }
 }
