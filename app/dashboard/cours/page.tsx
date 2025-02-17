@@ -1,16 +1,20 @@
-import { getRole } from "@/app/lib/actions";
+import { auth } from "@/auth"; 
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-    const role = await getRole();
-    console.log("test :", role);
-
-    if (role === "ADMIN") {
-        return (
-            <div>
-                <p>You are an admin, welcome!</p>
-            </div>
-        );
+    const session = await auth(); 
+    if (!session) {
+        redirect("/login");
+        return;
+    }else if (session.user.role !== "admin") {
+        redirect("/dashboard");
+        return;
     }
+    
 
-    return <p>You are not authorized to view this page!</p>;
+    return (
+        <div>
+            <h1>Bienvenue {session.user.email}, votre rôle est {session.user.role} !</h1>
+        </div>
+    );
 }

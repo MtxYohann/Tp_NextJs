@@ -1,20 +1,41 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Session, JWT, DefaultSession } from 'next-auth';
 import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
-import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
+import { User as OriginalUser } from '@/app/lib/definitions';
+
+interface User extends OriginalUser {
+    role: string;
+}
+import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 async function getUser(email: string): Promise<User | undefined> {
     try {
-        const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
+        const user = await sql<User[]>`
+            SELECT * FROM users WHERE email=${email}
+        `;
+        
         return user[0];
+        
+        
     } catch (error) {
         console.error('Failed to fetch user:', error);
         throw new Error('Failed to fetch user.');
+    }
+}
+
+declare module 'next-auth' {
+    interface Session {
+        user: {
+            role: string;
+        } & DefaultSession['user'];
+    }
+
+    interface JWT {
+        role: string;
     }
 }
 
@@ -33,7 +54,14 @@ export const { auth, signIn, signOut } = NextAuth({
                     if (!user) return null;
                     const passwordsMatch = await bcrypt.compare(password, user.password);
 
-                    if (passwordsMatch) return user;
+                    if (!passwordsMatch) return null;
+
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        role: user.role,
+                        name: user.name
+                    };
                 }
 
                 console.log('Invalid credentials');
@@ -41,4 +69,26 @@ export const { auth, signIn, signOut } = NextAuth({
             },
         }),
     ],
+    session: {
+        strategy: "jwt",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user && 'role' in user) {
+                token.role = user.role; 
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.role = token.role as string; 
+            }
+            return session;
+        },
+    },
+    pages: {
+        signIn: "/login",
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+
 });

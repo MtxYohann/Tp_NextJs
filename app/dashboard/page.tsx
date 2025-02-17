@@ -2,6 +2,7 @@ import CourseList from "../ui/dashboard/course-list";
 import TeacherList from "../ui/dashboard/teacher-list";
 
 export default function Page() {
+    
     return (
         <main>
             <p>Dashboard Page</p>

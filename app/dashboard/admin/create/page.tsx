@@ -17,9 +17,9 @@ export default function Page() {
                 <input type="password" name="password" placeholder="Mot de passe" id="password" required className="w-full p-2 border rounded" />
                 <select name="role" id="role" required className="w-full p-2 border rounded">
                     <option value="">Rôle</option>
-                    <option value="STUDENT">Etudiant</option>
-                    <option value="TEACHER">Enseignant</option>
-                    <option value="ADMIN">Admin</option>
+                    <option value="student">Etudiant</option>
+                    <option value="teacher">Enseignant</option>
+                    <option value="admin">Admin</option>
                 </select>
 
                 <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Créer</button>

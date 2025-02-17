@@ -3,16 +3,15 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { inter } from '@/app/ui/fonts'
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { signOut } from '@/auth';
-import { getRole } from '@/app/lib/actions'
+import { signOut,auth } from '@/auth';
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const role = await getRole();
-  const isAdmin = role === "ADMIN";
+  const session = await auth();
+  const isLogged = session ? true : false;
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
@@ -33,12 +32,12 @@ export default async function RootLayout({
             href={"/dashboard/cours"}>
             <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Cours</button>
           </Link>
-          {isAdmin && (
+          
             <Link
               href={"/dashboard/admin"}>
               <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Admin</button>
             </Link>
-          )}
+        
           <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }); }}>
             <button className="flex ml-20 h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
               <PowerIcon className="w-6" />

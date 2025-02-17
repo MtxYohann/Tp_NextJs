@@ -20,6 +20,7 @@ export async function fetchTeacher() {
     const data = await sql<User[]>`
     SELECT users.name, users.email
     FROM users
+    WHERE users.role = 'teacher'
     `;
     return data;
   } catch (error) {

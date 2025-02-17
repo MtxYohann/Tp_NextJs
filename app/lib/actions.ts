@@ -1,13 +1,12 @@
 'use server'
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { supabase } from "@/app/lib/supabaseClient"
 
 export async function authenticate(
     prevState: string | undefined,
@@ -44,19 +43,19 @@ const FormSchemaCourse = z.object({
 
 const CreateCourse = FormSchemaCourse.omit({ id: true });
 
-export type StateCourse = {
-    errors?: {
-        id?: string;
-        title?: string;
-        description?: string;
-        instrument?: string;
-        teacherId?: string;
-        level?: string;
-        schedule?: string;
-        capacity?: number;
+export interface StateCourse {
+    message: string | null;
+    errors: {
+        title?: string[];
+        description?: string[];
+        instrument?: string[];
+        teacherId?: string[];
+        level?: string[];
+        schedule?: string[];
+        capacity?: string[];
     };
-    message?: string | null;
 }
+
 
 export async function createCourse(prevState: StateCourse, formData: FormData) {
 
@@ -93,25 +92,6 @@ export async function createCourse(prevState: StateCourse, formData: FormData) {
 }
 
 
-export async function getRole() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-
-    if (error || !user) {
-        return null;
-    }
-
-    const { data, error: dbError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('email', user.email)
-        .single();
-
-    if (dbError || !data) {
-        return null;
-    }
-
-    return data.role;
-}
 
 const FormSchemaUser = z.object({
     id: z.string(),
@@ -156,7 +136,6 @@ export async function createUser(prevState: StateUser, formData: FormData) {
     }
     const { name, email, password, role } = validatedFields.data;
     const hashedPassword = await bcrypt.hash(`${password}`, 10);
-    console.log(hashedPassword);
 
     try {
         await sql`
