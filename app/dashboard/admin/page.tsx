@@ -12,8 +12,8 @@ export default async function Page() {
     }
 
     return (
-        <div>
-            <h1>Bienvenue {session.user.email}, votre rôle est {session.user.role} !</h1>
+        <div className= "flex flex-col items-center">
+                <h1 className="text-2xl">Bienvenue sur la page administrateur {session.user.name} !</h1>
         </div>
     );
 }

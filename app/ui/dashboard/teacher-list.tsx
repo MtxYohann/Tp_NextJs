@@ -6,7 +6,7 @@ export default async function TeacherList() {
 
     return (
         <div className="flex flex-col ">
-            <h2>Professeur</h2>
+            <h2 className="text-xl">Professeur</h2>
             <div className="flex flex-col justify-between rounded-xl bg-sky-200 w-80">
                 <div className="flex flex-col justify-between rounded-xl bg-sky-300 m-2 p-2">
                     {teacherList.map((user, i) => {

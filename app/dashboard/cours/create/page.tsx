@@ -2,9 +2,18 @@
 
 import { useActionState } from "react"
 import { createCourse, StateCourse } from '@/app/lib/actions';
+import { redirect } from "next/navigation";
+import { Session } from 'next-auth';
 
-export default function Page() {
-
+export default function Page({ session }: { session: Session | null }) {
+    
+    if (!session) {
+        redirect("/login");
+        return;
+    }else if (session.user.role !== "teacher" && session.user.role !== "admin") {
+        redirect("/dashboard");
+        return;
+    }
     const initialState: StateCourse = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(createCourse, initialState);
 

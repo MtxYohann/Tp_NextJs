@@ -1,20 +1,13 @@
-import { auth } from "@/auth"; 
-import { redirect } from "next/navigation";
+import CourseList from "@/app/ui/dashboard/course-list";
 
 export default async function Page() {
-    const session = await auth(); 
-    if (!session) {
-        redirect("/login");
-        return;
-    }else if (session.user.role !== "admin") {
-        redirect("/dashboard");
-        return;
-    }
-    
-
     return (
-        <div>
-            <h1>Bienvenue {session.user.email}, votre rôle est {session.user.role} !</h1>
+        <div className= "flex flex-col items-center"> 
+            <h1>Bienvenue voici la liste des cours !</h1>
+            <div className="mt-6 gap-6 m ">
+                <CourseList />
+            </div>
         </div>
+        
     );
 }
