@@ -12,6 +12,8 @@ export default async function RootLayout({
 }) {
   const session = await auth();
   const isLogged = session ? true : false;
+  const role = session ? session.user.role : null;
+
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
@@ -32,19 +34,28 @@ export default async function RootLayout({
             href={"/dashboard/cours"}>
             <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Cours</button>
           </Link>
-          
+          {role === 'admin' && (
             <Link
               href={"/dashboard/admin"}>
               <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Admin</button>
             </Link>
-        
+            )}
+          {isLogged === false &&(
+          <Link
+            href="/login">
+            <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Log in</button>
+            
+            
+          </Link>
+          )}
+          {isLogged === true &&(
           <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }); }}>
             <button className="flex ml-20 h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
               <PowerIcon className="w-6" />
               <div className="hidden md:block">Sign Out</div>
             </button>
           </form>
-
+          )}
 
         </div>
         {children}</body>
