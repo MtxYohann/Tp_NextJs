@@ -1,9 +1,18 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
 
-export default NextAuth(authConfig).auth;
+export async function middleware() {
+    const session = await auth();
+
+    if (!session) {
+        return NextResponse.redirect(new URL('/login'));
+    } else if (session.user.role !== 'admin') {
+        return NextResponse.redirect(new URL('/dashboard'));
+    }
+
+    return NextResponse.next();
+}
 
 export const config = {
-    // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-    matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+    matcher: ['/dashboard/admin/:path*'],
 };

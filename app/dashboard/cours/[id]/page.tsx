@@ -19,7 +19,6 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
         SELECT * FROM courses WHERE id = ${courseId} LIMIT 1;
     `;
 
-    console.log(course);
     
     let isEnrolled = [];
     if (session.user.id && courseId) {
@@ -48,8 +47,11 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 w-auto" >
             <div className="bg-white mt-7 p-8 rounded-lg shadow-lg max-w-md w-full">
-                <h1 className="text-2xl font-bold mb-4">Cours {course[0].title}</h1>
+                <h1 className="text-2xl font-bold mb-4">Cours de {course[0].instrument} {course[0].schedule}</h1>
+                <h1 className="text-2xl font-bold mb-4">{course[0].schedule}</h1>
+
                 <p className="mb-4">Bonjours {session.user.name},</p>
+                <p className="mb-4">C'est un cours de niveau: {course[0].level}</p>
                 {isEnrolled.length > 0 ? (
                     <p className="text-green-500">✅ Vous êtes déjà inscrit à ce cours.</p>
                 ) : (

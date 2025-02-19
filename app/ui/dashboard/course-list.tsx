@@ -5,7 +5,6 @@ import clsx from 'clsx'
 export default async function CourseList() {
     const teacherList = await fetchCourse();
     
-    
 
     return (
         <div className="flex flex-col ">
@@ -13,7 +12,6 @@ export default async function CourseList() {
             <div className="flex flex-col justify-between rounded-xl bg-sky-200 w-80">
                 <div className="flex flex-col justify-between rounded-xl bg-sky-300 m-2 p-2">
                     {teacherList.map((course, i) => {
-                        console.log("Redirection vers:", `/courses/${course.id}`);
                         return (
                             <div
                                 key={course.id}

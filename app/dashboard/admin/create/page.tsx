@@ -2,18 +2,12 @@
 
 import { useActionState } from "react"
 import { createUser, StateUser } from '@/app/lib/actions';
-import { redirect } from "next/navigation";
-import { Session } from 'next-auth';
 
-export default async function Page({ session }: { session: Session | null }) {
+
+
+export default function Page() {
+   
     
-    if (!session) {
-        redirect("/login");
-        return;
-    }else if (session.user.role !== "admin") {
-        redirect("/dashboard");
-        return;
-    }
     const initialState: StateUser = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(createUser, initialState);
 
