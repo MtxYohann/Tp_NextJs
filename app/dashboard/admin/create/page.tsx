@@ -4,7 +4,6 @@ import { useActionState } from "react"
 import { createUser, StateUser } from '@/app/lib/actions';
 
 
-
 export default function Page() {
    
     
@@ -19,10 +18,10 @@ export default function Page() {
                 <input type="email" name="email" placeholder="Email" id="email" required className="w-full p-2 border rounded" />
                 <input type="password" name="password" placeholder="Mot de passe" id="password" required className="w-full p-2 border rounded" />
                 <select name="role" id="role" required className="w-full p-2 border rounded">
-                    <option value="">Rôle</option>
-                    <option value="student">Etudiant</option>
-                    <option value="teacher">Enseignant</option>
-                    <option value="admin">Admin</option>
+                    <option key="default" value="">Rôle</option>
+                    <option key="student" value="student">Etudiant</option>
+                    <option key="teacher" value="teacher">Enseignant</option>
+                    <option key="admin" value="admin">Admin</option>
                 </select>
 
                 <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Créer</button>

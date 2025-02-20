@@ -7,12 +7,12 @@ export default async function TeacherList() {
     return (
         <div className="flex flex-col ">
             <h2 className="text-xl">Professeur</h2>
-            <div className="flex flex-col justify-between rounded-xl bg-sky-200 w-80">
-                <div className="flex flex-col justify-between rounded-xl bg-sky-300 m-2 p-2">
+            <div className="flex flex-col justify-between rounded-xl bg-sky-300 w-80">
+                <div className="flex flex-col justify-between rounded-xl bg-sky-200 m-2 p-2">
                     {teacherList.map((user, i) => {
                         return (
                             <div
-                                key={user.id}
+                                key={`${user.id}-${i}`}
                                 className={clsx(
                                     'flex flex-row items-center justify-between py-4',
                                     {

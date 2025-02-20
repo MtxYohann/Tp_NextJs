@@ -1,7 +1,7 @@
-import CourseList from "@/app/ui/dashboard/course-list";
-import TeacherList from "@/app/ui/dashboard/teacher-list";
+import CourseList from "@/app/ui/dashboard/teacher/course-list";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+
 
 export default async function Page() {
     const session = await auth(); 
@@ -13,14 +13,11 @@ export default async function Page() {
         
         <main>
             <div className= "flex flex-col items-center">
-                <h1 className="text-2xl">Bienvenue {session.user.name}</h1>
-            </div>
-            
-            <div className="flex">
-                
-                <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8 ml-8">
+                <h1 className="text-2xl">Bienvenue {session.user.name}</h1>                  
+                <div className="mt-6 gap-6 ">
                     <CourseList />
-                </div> 
+                    
+                </div>                
             </div>
         </main>
     );

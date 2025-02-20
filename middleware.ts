@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export async function middleware() {
-    const session = await auth();
+export async function middleware(req: NextRequest) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-    if (!session) {
-        return NextResponse.redirect(new URL('/login'));
-    } else if (session.user.role !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard'));
+    if (!token) {
+        const loginUrl = new URL('/login', req.nextUrl.origin);
+        return NextResponse.redirect(loginUrl);
+    } else if (req.nextUrl.pathname.startsWith('/dashboard/admin') && token.role !== 'admin') {
+        const dashboardUrl = new URL('/dashboard', req.nextUrl.origin);
+        return NextResponse.redirect(dashboardUrl);
+    } else if (req.nextUrl.pathname.startsWith('/dashboard/teacher') && token.role !== 'teacher') {
+        const dashboardUrl = new URL('/dashboard', req.nextUrl.origin);
+        return NextResponse.redirect(dashboardUrl);
     }
 
     return NextResponse.next();

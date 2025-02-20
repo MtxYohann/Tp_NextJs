@@ -1,5 +1,6 @@
 import { fetchCourse } from "@/app/lib/data";
 import clsx from 'clsx'
+import CourseEnrollment from './course-enrollment';
 
 export default async function CourseList() {
     const teacherList = await fetchCourse();
@@ -8,8 +9,8 @@ export default async function CourseList() {
     return (
         <div className="flex flex-col ">
             <h2 className="text-xl">Cours</h2>
-            <div className="flex flex-col justify-between rounded-xl bg-sky-300 w-80">
-                <div className="flex flex-col justify-between rounded-xl bg-sky-200 m-2 p-2">
+            <div className="flex flex-col justify-between rounded-xl bg-sky-200 w-80">
+                <div className="flex flex-col justify-between rounded-xl bg-sky-300 m-2 p-2">
                     {teacherList.map((course, i) => {
                         return (
                             <div
@@ -37,7 +38,7 @@ export default async function CourseList() {
                                         <p className="hidden text-lg text-gray-500 sm:block">
                                             Horaire: {course.schedule}
                                         </p>
-                                        
+                                        <CourseEnrollment courseId={course.id} />
                                     </div>
                                 </div>
                             </div>

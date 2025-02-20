@@ -2,18 +2,9 @@
 
 import { useActionState } from "react"
 import { createCourse, StateCourse } from '@/app/lib/actions';
-import { redirect } from "next/navigation";
-import { Session } from 'next-auth';
 
-export default function Page({ session }: { session: Session | null }) {
-    
-    if (!session) {
-        redirect("/login");
-        return;
-    }else if (session.user.role !== "teacher" && session.user.role !== "admin") {
-        redirect("/dashboard");
-        return;
-    }
+export default function Page() {
+
     const initialState: StateCourse = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(createCourse, initialState);
 
@@ -24,7 +15,7 @@ export default function Page({ session }: { session: Session | null }) {
                 <input type="text" name="title" placeholder="Titre" id="title" required className="w-full p-2 border rounded" />
                 <textarea name="description" placeholder="Description" id="description" required className="w-full p-2 border rounded" />
                 <input type="text" name="instrument" placeholder="Instrument" id="instrument" required className="w-full p-2 border rounded" />
-                <input type="text" name="teacherId" placeholder="ID du professeur" id="teacherId" required className="w-full p-2 border rounded" />
+                <input type="text" name="teacherId" placeholder="Prénom du professeur" id="teacherId" required className="w-full p-2 border rounded" />
                 <select name="level" id="level" required className="w-full p-2 border rounded">
                     <option value="">Niveau</option>
                     <option value="Débutant">Débutant</option>
