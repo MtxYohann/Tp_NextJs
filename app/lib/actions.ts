@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { UUID } from 'crypto';
 
 
 export async function authenticate(
@@ -219,5 +220,24 @@ export async function deleteCourse(courseId: string) {
         return {
             message: 'Database Error: Failed to Delete Course',
         };
+    }
+}
+
+
+export async function fetchEnrolledCourses(userId: string) {
+    
+    
+    try {
+         const courses = await sql`
+            SELECT courses.id, courses.title, courses.description, courses.instrument, courses.level, courses.schedule
+            FROM enrollments
+            JOIN courses ON enrollments.courseid = courses.id
+            WHERE enrollments.studentid::text = ${userId}::text
+        `;
+        console.log("Courses fetched successfully:", courses);
+        return courses;
+    } catch (error) {
+        console.error('Failed to fetch enrolled courses:', error);
+        return [];
     }
 }

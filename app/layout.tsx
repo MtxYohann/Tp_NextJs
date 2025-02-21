@@ -13,7 +13,7 @@ export default async function RootLayout({
   const session = await auth();
   const isLogged = session ? true : false;
   const role = session ? session.user.role : null;
-
+  const id = session ? session.user.id : null;
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
@@ -34,7 +34,13 @@ export default async function RootLayout({
             href={"/dashboard/cours"}>
             <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Cours</button>
           </Link>
-          {role === 'teacher' && (
+          {role === 'student' && (
+            <Link
+              href={`/dashboard/student/${id}`}>
+              <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Mon espace</button>
+            </Link>
+            )}
+          {(role === 'teacher' || role === 'admin') && (
             <Link
               href={"/dashboard/teacher"}>
               <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Gestion Cours</button>
