@@ -250,3 +250,23 @@ export async function fetchEnrolledCourses(userId: string): Promise<Course[]>  {
         return [];
     }
 }
+
+export async function addProgress(courseId: string, userId: string, evaluation: string, comment: string, date: string) {
+    
+    try {
+        await sql`
+            INSERT INTO progress (courseid, studentid, evaluation, comment, date)
+            VALUES (${courseId}::uuid, ${userId}::uuid, ${evaluation}, ${comment}, ${date})
+        `;
+        return {
+            message: 'Progression added successfully',
+        };
+    } catch (error) {
+       
+            console.error('Failed to fetch enrolled courses:', error);
+        return {
+            message: 'Database Error: Failed to Delete Course',
+        };
+        
+    }
+}

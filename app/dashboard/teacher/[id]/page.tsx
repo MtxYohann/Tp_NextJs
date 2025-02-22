@@ -1,10 +1,8 @@
 import { fetchCourseById } from '@/app/lib/actions';
-import postgres from "postgres";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import EditCourseForm from '@/app/ui/dashboard/teacher/course-update';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export default async function CoursePage({ params }: { params: Promise<{ id: string} >}) {
     const session = await auth();

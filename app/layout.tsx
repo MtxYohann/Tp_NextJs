@@ -41,10 +41,16 @@ export default async function RootLayout({
             </Link>
             )}
           {(role === 'teacher' || role === 'admin') && (
+          <>
             <Link
               href={"/dashboard/teacher"}>
               <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Gestion Cours</button>
             </Link>
+            <Link
+              href={"/dashboard/teacher/eleve"}>
+              <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Gestion note</button>
+            </Link>
+          </>
             )}
           {role === 'admin' && (
             <Link
