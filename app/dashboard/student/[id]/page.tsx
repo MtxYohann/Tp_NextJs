@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import CourseList from "@/app/ui/dashboard/student/course-list";
 import { fetchEnrolledCourses } from '@/app/lib/actions';
-import { Course } from '@/app/lib/definitions';
 
 export default async function Page() {
     const session = await auth(); 
@@ -12,7 +11,6 @@ export default async function Page() {
         }
         console.log("session: ",session);
         const courses = await fetchEnrolledCourses(session.user.id);
-        console.log("fetchEnrolledCourses",courses);
         
 
     return (

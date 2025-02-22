@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { UUID } from 'crypto';
+import { Course } from './definitions';
 
 
 export async function authenticate(
@@ -224,18 +224,27 @@ export async function deleteCourse(courseId: string) {
 }
 
 
-export async function fetchEnrolledCourses(userId: string) {
-    
+export async function fetchEnrolledCourses(userId: string): Promise<Course[]>  {
+
     
     try {
          const courses = await sql`
-            SELECT courses.id, courses.title, courses.description, courses.instrument, courses.level, courses.schedule
+            SELECT courses.id, courses.title, courses.description, courses.instrument, courses.level, courses.schedule, courses.teacherId, courses.capacity 
             FROM enrollments
-            JOIN courses ON enrollments.courseid = courses.id
-            WHERE enrollments.studentid::text = ${userId}::text
+            JOIN courses ON enrollments.courseid = courses.id::uuid
+            WHERE enrollments.studentid = ${userId}::uuid
         `;
-        console.log("Courses fetched successfully:", courses);
-        return courses;
+
+        return courses.map((course: any) => ({
+            id: course.id,
+            title: course.title,
+            description: course.description,
+            instrument: course.instrument,
+            level: course.level,
+            schedule: course.schedule,
+            teacherId: course.teacherId,
+            capacity: course.capacity,
+        }));
     } catch (error) {
         console.error('Failed to fetch enrolled courses:', error);
         return [];
