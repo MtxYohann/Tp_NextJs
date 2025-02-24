@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 export default async function StudentList() {
     const studentList = await fetchStudent();
-    console.log("studentList", studentList);
 
     return (
         <div className="flex flex-col items-center">

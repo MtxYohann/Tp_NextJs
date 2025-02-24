@@ -18,7 +18,7 @@ export default async function Page() {
             <h1 className="text-2xl">Bienvenue sur la page de suivie {session.user.name} !</h1>
             {await Promise.all(courses.map(async (course) => {
                                     const progress = await fetchProgress(course.id, session.user.id);
-                                    console.log("course", course);
+                                    
                                     
                                     return (
                                         <CourseList

@@ -3,7 +3,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbopack",
-    "start": "next start"
+    "start": "next --turbopack"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.7.4",

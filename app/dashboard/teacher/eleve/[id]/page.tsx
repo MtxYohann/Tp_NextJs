@@ -5,7 +5,6 @@ import CourseNoteForm from '@/app/ui/dashboard/teacher/course-note';
 export default async function CoursesNotePage ({ params }: { params: Promise<{ id: string} >}) {
     
     const userId= (await params).id;
-    console.log("courseId", userId);
     
     const courses = await fetchEnrolledCourses(userId);
     
@@ -19,7 +18,6 @@ export default async function CoursesNotePage ({ params }: { params: Promise<{ i
                 <ul className="space-y-4">
                     {await Promise.all(courses.map(async (course) => {
                         const progress = await fetchProgress(course.id, userId);
-                        console.log("progress", progress);
                         
                         return (
                             <li key={course.id} className="p-4 border rounded-lg">

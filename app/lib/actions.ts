@@ -167,7 +167,6 @@ const UpdateCourse = FormSchemaCourse.omit({ id: true });
 
 export async function updateCourse(id: string, prevState: StateCourse, formData: FormData): Promise<StateCourse> {
 
-    console.log("Bien passer dans la fonction updateCourse");
     const validatedFields = UpdateCourse.safeParse({
         title: formData.get('title'),
         description: formData.get('description'),
@@ -179,15 +178,12 @@ export async function updateCourse(id: string, prevState: StateCourse, formData:
     });
 
     if (!validatedFields.success) {
-        console.log(validatedFields.error.flatten().fieldErrors);
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Missing Fields. Failed to Update courses.',
         };
     }
     const { title, description, instrument, teacherId, level, schedule, capacity } = validatedFields.data;
-
-    console.log("Id dans le action",id);
     
     try {
         await sql`
