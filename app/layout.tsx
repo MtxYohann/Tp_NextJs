@@ -29,17 +29,20 @@ export default async function RootLayout({
           <Link
             href={"/dashboard"}>
             <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Dashboard</button>
-          </Link>
+          </Link> 
+          {(role === 'student') && (
+          <>
           <Link
             href={"/dashboard/cours"}>
             <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Cours</button>
           </Link>
-          {role === 'student' && (
+         
             <Link
               href={`/dashboard/student/${id}`}>
               <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Mon espace</button>
             </Link>
-            )}
+          </>
+          )}
           {(role === 'teacher' || role === 'admin') && (
           <>
             <Link

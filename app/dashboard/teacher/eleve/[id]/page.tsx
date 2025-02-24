@@ -1,4 +1,4 @@
-import { fetchEnrolledCourses } from '@/app/lib/actions';
+import { fetchEnrolledCourses,fetchProgress } from '@/app/lib/actions';
 import Link from 'next/link';
 import CourseNoteForm from '@/app/ui/dashboard/teacher/course-note';
 
@@ -8,7 +8,7 @@ export default async function CoursesNotePage ({ params }: { params: Promise<{ i
     console.log("courseId", userId);
     
     const courses = await fetchEnrolledCourses(userId);
-
+    
 
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -17,16 +17,36 @@ export default async function CoursesNotePage ({ params }: { params: Promise<{ i
                 <div>No courses found</div>
             ) : (
                 <ul className="space-y-4">
-                    {courses.map((course) => (
-                        <li key={course.id} className="p-4 border rounded-lg">
-                            <h2 className="text-xl font-semibold">{course.title}</h2>
-                            <p>{course.description}</p>
-                            <p>Instrument: {course.instrument}</p>
-                            <p>Niveau: {course.level}</p>
-                            <p>Horaire: {course.schedule}</p>
-                            <CourseNoteForm courseId={course.id} userId={userId} />
-                        </li>
-                    ))}
+                    {await Promise.all(courses.map(async (course) => {
+                        const progress = await fetchProgress(course.id, userId);
+                        console.log("progress", progress);
+                        
+                        return (
+                            <li key={course.id} className="p-4 border rounded-lg">
+                                <h2 className="text-xl font-semibold">{course.title}</h2>
+                                <p>{course.description}</p>
+                                <p>Instrument: {course.instrument}</p>
+                                <p>Niveau: {course.level}</p>
+                                <p>Horaire: {course.schedule}</p>
+                                {progress && (
+                                    <CourseNoteForm
+                                        courseId={course.id}
+                                        userId={userId}
+                                        initialEvaluation={progress.evaluation}
+                                        initialComment={progress.comment}
+                                    />
+                                )}
+                                {progress === undefined && (
+                                    <CourseNoteForm
+                                        courseId={course.id}
+                                        userId={userId}
+                                        initialEvaluation=""
+                                        initialComment=""
+                                    />
+                                )}
+                            </li>
+                        );
+                    }))}
                 </ul>
             )}
         </div>

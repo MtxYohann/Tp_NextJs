@@ -270,3 +270,17 @@ export async function addProgress(courseId: string, userId: string, evaluation: 
         
     }
 }
+
+export async function fetchProgress(courseId: string, userId: string) {
+    try {
+        const progress = await sql`
+            SELECT evaluation, comment, date
+            FROM progress
+            WHERE courseid = ${courseId}::uuid AND studentid = ${userId}::uuid
+        `;
+        return progress[0];
+    } catch (error) {
+        console.error('Failed to fetch progress:', error);
+        return null;
+    }
+}

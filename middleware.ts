@@ -14,6 +14,9 @@ export async function middleware(req: NextRequest) {
     } else if (req.nextUrl.pathname.startsWith('/dashboard/teacher') && token.role !== 'teacher') {
         const dashboardUrl = new URL('/dashboard', req.nextUrl.origin);
         return NextResponse.redirect(dashboardUrl);
+    } else if (req.nextUrl.pathname.startsWith('/dashboard/cours') && token.role !== 'student') {
+        const dashboardUrl = new URL('/dashboard', req.nextUrl.origin);
+        return NextResponse.redirect(dashboardUrl);
     }
 
     return NextResponse.next();

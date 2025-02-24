@@ -1,13 +1,10 @@
 'use client'
 
 import { useActionState } from 'react';
-import { addProgress } from '@/app/lib/actions';
-import { Row } from 'postgres';
-import { Course } from '@/app/lib/definitions';
+import { addProgress} from '@/app/lib/actions';
 
+export default function CourseNoteForm({ courseId, userId, initialEvaluation, initialComment }: { courseId: any, userId: string, initialEvaluation: string,initialComment: string }) {
 
-export default function CourseNoteForm({ courseId, userId }: { courseId: any, userId: string }) {
-    
     const addProgressWithIds = (state: { message: string }, formData: FormData) => {
         const evaluation = formData.get('evaluation') as string;
         const comment = formData.get('comment') as string;
@@ -27,6 +24,7 @@ export default function CourseNoteForm({ courseId, userId }: { courseId: any, us
                     name="evaluation"
                     required
                     className="w-full p-2 border rounded"
+                    defaultValue={initialEvaluation}
                 >
                     <option value="">Sélectionnez une note</option>
                     <option value="A">A</option>
@@ -46,6 +44,7 @@ export default function CourseNoteForm({ courseId, userId }: { courseId: any, us
                     name="comment"
                     required
                     className="w-full p-2 border rounded"
+                    defaultValue={initialComment}
                 />
             </div>
             <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
