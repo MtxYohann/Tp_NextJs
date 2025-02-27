@@ -43,7 +43,7 @@ export default async function RootLayout({
             </Link>
           </>
           )}
-          {(role === 'teacher' || role === 'admin') && (
+          {role === 'teacher' && (
           <>
             <Link
               href={"/dashboard/teacher"}>
@@ -64,7 +64,7 @@ export default async function RootLayout({
           {isLogged === false &&(
           <Link
             href="/login">
-            <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Log in</button>
+            <button className='ml-20 bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 h-[48px] w-32 rounded-lg shadow-lg' >Se connecter</button>
             
             
           </Link>
@@ -73,7 +73,7 @@ export default async function RootLayout({
           <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }); }}>
             <button className="flex ml-20 h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
               <PowerIcon className="w-6" />
-              <div className="hidden md:block">Sign Out</div>
+              <div className="hidden md:block">Se deconnecter</div>
             </button>
           </form>
           )}

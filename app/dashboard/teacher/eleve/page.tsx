@@ -28,7 +28,8 @@ export default async function StudentList() {
                                     <p className="hidden text-sm text-gray-500 sm:block">
                                         Email: {user.email}
                                     </p>
-                                    <Link href={`/dashboard/teacher/eleve/${user.id}`}>
+                                    <Link href={`/dashboard/teacher/eleve/${user.id}`}
+                                    className="bg-blue-500 text-white p-3 text-sm font-medium hover:bg-blue-600 rounded-lg mt-3 flex shadow-lg">
                                         Voir les cours
                                     </Link>
                                 </div>
